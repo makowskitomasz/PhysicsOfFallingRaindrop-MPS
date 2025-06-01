@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_radius_vs_altitude(radii0, z0, planet, model_fn):
-    plt.figure(figsize=(6, 4))
+def plot_radius_vs_altitude(radii0, z0, planet, model_fn, figsize=(5, 5)):
+    plt.figure(figsize=figsize)
 
     for r0 in radii0:
         traj = model_fn(r0, z0, planet)

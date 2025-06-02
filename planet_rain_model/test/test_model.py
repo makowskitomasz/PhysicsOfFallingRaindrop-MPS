@@ -13,7 +13,7 @@ def test_evaporated_drop_stops_early():
     traj = simulate_raindrop_descent(r0, z0, earth)
     final_z = traj[-1][0]
     final_r = traj[-1][1]
-    assert final_z > 0  # evaporated before surface
+    assert final_z > 0
     assert final_r < 1e-8
 
 def test_large_drop_survives_to_ground():

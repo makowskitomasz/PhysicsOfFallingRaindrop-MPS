@@ -9,7 +9,7 @@ from simulation.constants import Q_
 def test_saturation_pressure_reasonable():
     T = Q_(300, "K")
     p_sat = saturation_vapor_pressure(T)
-    assert 3000 < p_sat.magnitude < 5000  # Pa range for 300K
+    assert 3000 < p_sat.magnitude < 5000 
 
 def test_terminal_velocity_scaling():
     r_small = Q_(1e-4, "m")

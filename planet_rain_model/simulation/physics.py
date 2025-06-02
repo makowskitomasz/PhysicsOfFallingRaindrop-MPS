@@ -25,16 +25,20 @@ def ventilation_factor(Re, Sc):
     else:
         return 0.78 * Re**0.308
 
-def evaporation_rate_full(r_eq, T, RH, p, f_V, T_LCL):
-    delta_T = 0.5 * (T - T_LCL)
-    T_drop = T - delta_T
-
-    p_sat = saturation_vapor_pressure(T)
+def evaporation_rate_exact(r_eq, T_air, RH, p, f_V, T_LCL):
+    """
+    Computes dr/dt using Eq. from Figure 1:
+    dr/dt = (f_V * D * M_v) / (r * rho_l * R) * (RH * p_sat(T_air)/T_air - p_sat(T_drop)/T_drop)
+    """
+    T_drop = T_air - 0.5 * (T_air - T_LCL)
+    p_sat_air = saturation_vapor_pressure(T_air)
     p_sat_drop = saturation_vapor_pressure(T_drop)
-    delta = RH - (p_sat_drop / p_sat).magnitude
-    if delta <= 0:
-        return Q_(0, "m/s")
 
-    term1 = f_V * D_vap / (rho_water * r_eq)
-    term2 = (M_v * p_sat) / (R * T)
-    return (term1 * term2 * delta).to("m/s")
+    delta = RH * (p_sat_air / T_air) - (p_sat_drop / T_drop)
+
+    numerator = f_V * D_vap * M_v
+    denominator = r_eq * rho_water * R
+
+    term1 = numerator / denominator
+
+    return (term1 * delta).to("m/s")

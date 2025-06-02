@@ -12,7 +12,7 @@ def simulate_raindrop_descent(r0, z0, planet, dz=Q_(0.1, "m")):
         Sc = eta_air / (planet["rho_air"] * D_vap)
         f_V = ventilation_factor(Re.magnitude, Sc.magnitude)
 
-        drdt = evaporation_rate_full(r, T, planet["RH"], p, f_V, planet["T_LCL"])
+        drdt = evaporation_rate_exact(r, T, planet["RH"], p, f_V, planet["T_LCL"])
         drdz = drdt / v
         r = (r - drdz * dz).to("m")
         z = z - dz

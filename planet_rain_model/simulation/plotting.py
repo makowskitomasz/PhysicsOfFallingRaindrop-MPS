@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_radius_vs_altitude(radii0, z0, planet, model_fn, figsize=(5, 5)):
+    plt.style.use("dark_background")
     plt.figure(figsize=figsize)
 
     for r0 in radii0:

@@ -17,9 +17,12 @@ def pressure_profile(z, p0, T0, g):
 
 def calculate_shape_ratio(r_eq):
     def F(x):
-        return np.sqrt(SIGMA_WATER_AIR / (GRAVITY * (rho_water - RHO_AIR))) * x**(-1/6) * \
-               np.sqrt(x**(-2) - 2 * x**(-1/3) + 1) - r_eq
-    return brentq(F, 1e-9, 1.0 - 1e-9)
+        # Unfortunately, scipy does not work well with pint units, forcing us to use
+        # dimensionless quantities
+        return np.sqrt(sigma_water_air.magnitude / (gravity.magnitude * (rho_water.magnitude - rho_air.magnitude))) * x**(-1/6) * \
+               np.sqrt(x**(-2) - 2 * x**(-1/3) + 1) - r_eq.magnitude
+
+    return Q_(brentq(F, 1e-9, 1.0 - 1e-9), "dimensionless")
 
 def calculate_fSA(shape_ratio):
     epsilon = np.sqrt(1 - shape_ratio**2)
@@ -35,20 +38,22 @@ def calculate_C_shape(fSA):
     return 1 + 1.5 * (fSA - 1)**0.5 + 6.7 * (fSA - 1)
 
 def calculate_CD(C_shape, vT, r_eq):
-    Re = vT * 2 * r_eq * RHO_AIR / AIR_VISCOSITY
+    Re = vT * 2 * r_eq * rho_air / air_viscosity
     return ((24 / Re) * (1 + 0.15 * Re**0.687) + 0.42 * (1 + 4.25 * 10**4 * Re**-1.16)**-1) * C_shape
 
 def calculate_terminal_velocity(Cd, shape_ratio, r_eq):
-        return np.sqrt(8/3 * ((rho_water - RHO_AIR) / RHO_AIR) * (GRAVITY / Cd) * shape_ratio**(2/3) * r_eq)
+        return np.sqrt(8/3 * ((rho_water - rho_air) / rho_air) * (gravity / Cd) * shape_ratio**(2/3) * r_eq)
 
 def find_terminal_velocity(r_eq, C_shape, shape_ratio):
     v0 = 0.001
     def f(vT):
+        # Unfortunately, scipy does not work well with pint units, forcing us to use
+        # dimensionless quantities and converting them back later on
         vT = np.abs(vT)
-        Cd = calculate_CD(C_shape, vT, r_eq)
-        return calculate_terminal_velocity(Cd, shape_ratio, r_eq)
+        Cd = calculate_CD(C_shape, Q_(vT, "m/s"), r_eq)
+        return calculate_terminal_velocity(Cd, shape_ratio, r_eq).magnitude
 
-    return fixed_point(f, v0)
+    return Q_(fixed_point(f, v0), "m/s")
 
 def terminal_velocity(r_eq):
     shape_ratio = calculate_shape_ratio(r_eq)

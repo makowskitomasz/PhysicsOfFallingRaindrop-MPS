@@ -13,6 +13,9 @@ import pint
 
 
 def test_terminal_velocity_unit():
+    """
+    Ensure terminal_velocity returns a pint Quantity with correct velocity units.
+    """
     r = Q_(1e-3, "m")
     v = terminal_velocity(r)
     assert isinstance(v, pint.Quantity)
@@ -20,6 +23,9 @@ def test_terminal_velocity_unit():
 
 
 def test_saturation_vapor_pressure_units():
+    """
+    Ensure saturation_vapor_pressure returns pressure in proper units.
+    """
     T = Q_(300, "K")
     p_sat = saturation_vapor_pressure(T)
     assert isinstance(p_sat, pint.Quantity)
@@ -27,18 +33,27 @@ def test_saturation_vapor_pressure_units():
 
 
 def test_temperature_profile_unit():
+    """
+    Check that dry adiabatic temperature profile has temperature units.
+    """
     z = Q_(500, "m")
     T = temperature_dry_adiabatic(z, earth["T0"], earth["Gamma_d"])
     assert T.check("[temperature]")
 
 
 def test_pressure_profile_unit():
+    """
+    Check that pressure_profile returns a quantity with pressure units.
+    """
     z = Q_(1000, "m")
     p = pressure_profile(z, earth["p0"], earth["T0"], earth["g"])
     assert p.check("[pressure]")
 
 
 def test_evaporation_rate_unit():
+    """
+    Ensure evaporation_rate_full returns a rate with correct units (m/s).
+    """
     r = Q_(0.0005, "m")
     z = Q_(100, "m")
     T = temperature_dry_adiabatic(z, earth["T0"], earth["Gamma_d"])

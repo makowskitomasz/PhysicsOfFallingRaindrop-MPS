@@ -3,7 +3,7 @@ from simulation.physics import (
     temperature_dry_adiabatic,
     pressure_profile,
     terminal_velocity,
-    evaporation_rate_full,
+    evaporation_rate_exact,
     ventilation_factor
 )
 from simulation.constants import Q_, R, M_v, rho_water, eta_air, D_vap
@@ -48,5 +48,5 @@ def test_evaporation_rate_unit():
     Sc = eta_air / (earth["rho_air"] * D_vap)
     f_V = ventilation_factor(Re.magnitude, Sc.magnitude)
 
-    drdt = evaporation_rate_full(r, T, RH=earth["RH"], p=p, f_V=f_V, T_LCL=earth["T_LCL"])
+    drdt = evaporation_rate_exact(r, T, RH=earth["RH"], p=p, f_V=f_V, T_LCL=earth["T_LCL"])
     assert drdt.check("[length] / [time]")

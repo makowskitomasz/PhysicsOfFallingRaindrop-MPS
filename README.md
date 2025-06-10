@@ -123,7 +123,7 @@ Each planet is defined with:
 - Relative humidity RH
 - Pressure p0
 - Gravitational acceleration g
-- Lapse rate Gamma_d
+- Lapse rate $Gamma_d$
 - Air density $rho_{air}$
 - Lifting condensation level temperature $T_{LCL}$
 

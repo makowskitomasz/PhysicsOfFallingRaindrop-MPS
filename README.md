@@ -119,9 +119,9 @@ You can simulate droplet behavior in atmospheres of:
 
 Each planet is defined with:
 
-- Surface temperature T0
+- Surface temperature $T_0$
 - Relative humidity RH
-- Pressure p0
+- Pressure $p_0$
 - Gravitational acceleration g
 - Lapse rate $Gamma_d$
 - Air density $rho_{air}$

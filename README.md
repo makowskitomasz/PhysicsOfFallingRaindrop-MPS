@@ -1,34 +1,36 @@
-Raindrop Descent Simulator
-==========================
+# Raindrop Descent Simulator
+
 
 This project simulates the descent and evaporation of raindrops through planetary atmospheres.
 It combines physical models, numerical methods, and visualization tools to study how droplet radius
 and altitude evolve under gravity, atmospheric drag, and evaporation processes.
 
-🌧 Project Goals
-----------------
-- Model the descent of raindrops through a planetary atmosphere.
-- Predict evaporation based on thermodynamic and diffusion-driven processes.
-- Compute terminal velocity accounting for drop deformation.
-- Compare numerical results with analytical and experimental data.
-- Support multiple planets like Earth, Mars, Titan, Jupiter, Saturn, and K2-18b.
+## Project Goals
 
-🧠 Physical Assumptions and Models
-----------------------------------
+Goal: Compare the results of the figure and the achieved values.
+
+Steps:
+* Reconstruct the initial values $r_0$ as shown in the figure.
+
+* Check if the droplets exceed the threshold value $​r_{min}$.
+
+* Compare the final values $r_{eq} (z = 0)$ with the results presented in the article.
+
+## Physical Assumptions and Models
 
 1. Raindrop Terminal Velocity
 
 Terminal velocity is not constant and depends on:
 - Drop size (equivalent radius)
-- Drag coefficient (C_D) that is shape-dependent
-- Shape deformation, represented via the shape ratio (b/a)
+- Drag coefficient ($C_D$) that is shape-dependent
+- Shape deformation, represented via the shape ratio ($\frac{b}{a}$)
 
 To find terminal velocity:
-- Estimate the shape ratio from r_eq using a non-linear equation.
-- Use the shape ratio to compute the surface area correction f_SA
-  and then the drag shape factor C_shape.
+- Estimate the shape ratio from $r_{eq}$ using a non-linear equation.
+- Use the shape ratio to compute the surface area correction $f_{SA}$
+  and then the drag shape factor $C_{shape}$.
 - Use an iterative fixed-point solver to converge to the correct
-  velocity v_t, since C_D itself depends on velocity.
+  velocity $v_t$, since $C_D$ itself depends on velocity.
 
 2. Evaporation Rate
 
@@ -39,38 +41,57 @@ Evaporation is modeled using a modified diffusion equation:
 ```
 
 Where:
-- f_V is the ventilation factor
+- $f_V$ is the ventilation factor
 - D is the diffusion coefficient
-- T_drop is assumed to be cooler than ambient air (based on lifting condensation level)
+- $T_{drop}$ is assumed to be cooler than ambient air (based on lifting condensation level)
 
-3. Atmospheric Profiles
 
-- Temperature is calculated with a dry adiabatic lapse rate:
-      T(z) = T0 - Gamma_d * z
+## Raindrop shape
+"In isolation, a precipitating particle does two things: (1) it falls and (2) it evaporates. To calculate the rate at which a particle falls and evaporates requires knowledge of the relationship between particle mass and shape. Unlike solid precipitating particles, whose forms vary widely, raindrops have equilibrium shapes that can be uniquely calculated for a given mass of liquid condensible, air density, and surface gravity. A unique shape allows us, in a known external environment, to describe a raindrop with only a single size variable. Here, we use equivalent radius $r_{eq}$" - The Physics of Falling Raindrops in Diverse Planetary Atmospheres
 
-- Pressure is computed assuming an isothermal atmosphere:
-      p(z) = p0 * exp(-z / H)
+In order to calculate terminal velocity we need to find $\frac{a}{b}$, which is uniquely determined from $r_{eq}$ with following equation:
 
-🔬 Validation
--------------
+$$ r_{eq} = \sqrt{\frac{\sigma_{c-air}}{g(\rho_{c,l} - \rho_{air})}}\left(\frac{b}{a}\right)^{-\frac{1}{6}}\sqrt{\left(\frac{b}{a}\right)^{-2} - 2\left(\frac{b}{a}\right)^{-\frac{1}{3}} + 1}$$
 
-✅ Stokes’ Law (Analytical Benchmark)
+This can be done by transforming it into form $F(x) = 0$ where the variable $x = \frac{b}{a}$ and finding roots of $F$.
 
-For small droplets, terminal velocity is compared with the classical formula:
+$$ F\left(\frac{b}{a}\right) = \sqrt{\frac{\sigma_{c-air}}{g(\rho_{c,l} - \rho_{air})}}\left(\frac{b}{a}\right)^{-\frac{1}{6}}\sqrt{\left(\frac{b}{a}\right)^{-2} - 2\left(\frac{b}{a}\right)^{-\frac{1}{3}} + 1} - r_{eq} = 0$$
 
-```math
-v_t = \frac{2 \cdot r^2 \cdot g \cdot (\rho_{\text{water}} - \rho_{\text{air}})}{9 \cdot \mu}
-```
+Where:
+- $r_{eq}$ – equivalent radius of the drop  
+- $a$, $b$ – semi-major and semi-minor axes of the ellipsoidal drop  
+- $\sigma_{c\text{-}air}$ – surface tension between cloud water and air  
+- $g$ – gravitational acceleration  
+- $\rho_{c,l}$ – density of cloud liquid water  
+- $\rho_{air}$ – density of air
 
-Works only for very small droplets (≲ 100 µm).
 
-✅ Experimental Data
+## Tests
 
-Numerical results are validated against tabulated experimental measurements of terminal velocity
-across a range of radii.
+To validate the predictions of the physical model presented by Loftus & Wordsworth (2021) by verifying whether real-world observations include raindrops exceeding the maximum survivable size as constrained by evaporation and stability. Open-access data from the DISDRODB project or NASA website provide high-temporal-resolution measurements from video disdrometers, used to analyze raindrop size and velocity.
 
-📊 Visualization
-----------------
+Data includes:
+* raindrop diameter
+
+* fall speed
+
+* time of observation
+
+* type of precipitation
+
+It allows comparison between theoretical models and actual raindrop size distributions
+
+
+## Model Prediction
+
+The model defines a narrow range of viable raindrop radii that are:
+* Large enough to avoid complete evaporation during descent,
+
+* Small enough to remain stable and avoid breakup due to aerodynamic forces.
+
+
+
+## Visualization
 
 Function: plot_radius_vs_altitude()
 
@@ -84,17 +105,17 @@ Example:
     z0 = Q_(600.0, "m")
     plot_radius_vs_altitude(radii0, z0, earth, simulate_raindrop_descent)
 
-🪐 Planetary Support
----------------------
+## Planetary Support
+
 
 You can simulate droplet behavior in atmospheres of:
 
-- 🌍 Earth
-- ♂ Mars
-- 🪐 Saturn
-- 🪐 Jupiter
-- 🟤 Titan
-- 🌊 Exoplanet K2-18b
+- Earth
+- Mars
+- Saturn
+- Jupiter
+- Titan
+- Exoplanet K2-18b
 
 Each planet is defined with:
 
@@ -103,69 +124,10 @@ Each planet is defined with:
 - Pressure p0
 - Gravitational acceleration g
 - Lapse rate Gamma_d
-- Air density rho_air
-- Lifting condensation level temperature T_LCL
+- Air density $rho_{air}$
+- Lifting condensation level temperature $T_{LCL}$
 
-🧪 Tests
---------
-
-Test suite verifies:
-- Unit consistency using `pint` (e.g., velocity in m/s, pressure in Pa)
-- Physical correctness, such as pressure decreasing with altitude
-- Impact of droplet size on evaporation and terminal velocity
-- Full evaporation of small droplets before ground impact
-- Survival of large droplets to the ground
-- Validity of evaporation rate equation units
-- Completeness and plausibility of planetary definitions (e.g. temperature, gravity, humidity)
-
-📂 Project Structure
---------------------
-```
-      .
-      ├── simulation/
-      │   ├── model.py           # Drop descent simulation logic
-      │   ├── physics.py         # Physics utilities (velocity, pressure, evaporation)
-      │   ├── plotting.py        # Visualization functions
-      │   ├── constants.py       # Physical constants
-      ├── planets/
-      │   ├── earth.py           # Planet definitions
-      │   └── ...
-      ├── tests/
-      │   └── test_*.py          # Unit tests
-      ├── notebooks/
-      │   └── exploration.ipynb  # Validation and analysis
-      └── README.md              # You're here!
-```
-📦 Requirements
-----------------
-
-- Python 3.8+
-- numpy
-- matplotlib
-- scipy
-- pint
-- pytest (for running tests)
-
-Install dependencies:
-
-    pip install -r requirements.txt
-
-✅ Running the Simulation
--------------------------
-
-    from simulation.model import simulate_raindrop_descent
-    from planets.earth import earth
-    from simulation.constants import Q_
-
-    r0 = Q_(0.3, "mm")
-    z0 = Q_(600, "m")
-    trajectory = simulate_raindrop_descent(r0, z0, earth)
-
-📈 Example Plot
-----------------
-
-
-
+## Example Plot
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/fd13a570-9a54-4e5e-838f-b9a611eb1c90" alt="Raindrop Simulation Plot" width="600"/><br/>
@@ -173,8 +135,4 @@ Install dependencies:
 </p>
 
 
-📘 License
-----------
-
-MIT License. See LICENSE file for details.
 

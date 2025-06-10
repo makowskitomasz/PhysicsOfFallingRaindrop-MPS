@@ -2,6 +2,28 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_radius_vs_altitude(radii0, z0, planet, model_fn, figsize=(5, 5)):
+    """
+    Plot the evolution of droplet radius vs. altitude for multiple initial sizes.
+
+    Parameters
+    ----------
+    radii0 : list of pint.Quantity
+        List of initial droplet radii (e.g., [Q_(0.1, "mm"), Q_(0.5, "mm")]).
+    z0 : pint.Quantity
+        Initial altitude of the droplets.
+    planet : dict
+        Dictionary of planetary and atmospheric parameters passed to the model.
+    model_fn : callable
+        Function that simulates droplet descent; must return a list of (z, r) tuples.
+    figsize : tuple, optional
+        Size of the figure (default is (5, 5)).
+
+    Notes
+    -----
+    - Surviving droplets (large enough to reach near ground) are plotted in purple.
+    - Evaporated or very small droplets are plotted in gray with a cross at the endpoint.
+    - The x-axis is logarithmic in mm, and the y-axis shows altitude in meters.
+    """
     plt.style.use("dark_background")
     plt.figure(figsize=figsize)
 

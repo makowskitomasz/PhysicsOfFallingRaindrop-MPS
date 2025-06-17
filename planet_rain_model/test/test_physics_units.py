@@ -6,7 +6,7 @@ from simulation.physics import (
     evaporation_rate_exact,
     ventilation_factor
 )
-from simulation.constants import Q_, R, M_v, rho_water, eta_air, D_vap
+from simulation.constants import Q_, eta_air, D_vap
 from planets.earth import earth
 
 import pint
@@ -52,7 +52,7 @@ def test_pressure_profile_unit():
 
 def test_evaporation_rate_unit():
     """
-    Ensure evaporation_rate_full returns a rate with correct units (m/s).
+    Ensure evaporation_rate_exact returns a rate with correct units (m/s).
     """
     r = Q_(0.0005, "m")
     z = Q_(100, "m")

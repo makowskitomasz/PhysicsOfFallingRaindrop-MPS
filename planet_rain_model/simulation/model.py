@@ -1,4 +1,5 @@
-from .physics import *
+from .physics import temperature_dry_adiabatic, pressure_profile, terminal_velocity, ventilation_factor, evaporation_rate_exact
+from physics import Q_, D_vap, eta_air
 
 def simulate_raindrop_descent(r0, z0, planet, dz=Q_(0.1, "m")):
     """

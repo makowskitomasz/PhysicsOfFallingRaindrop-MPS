@@ -1,6 +1,6 @@
 from scipy.optimize import brentq, fixed_point
 import numpy as np
-from .constants import *
+from .constants import Q_, R, M_v, rho_air, rho_water, sigma_water_air, gravity, air_viscosity, D_vap
 
 def saturation_vapor_pressure(T):
     """

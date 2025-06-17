@@ -6,7 +6,7 @@ from simulation.physics import (
     evaporation_rate_exact,
     ventilation_factor
 )
-from simulation.constants import Q_, R, M_v, rho_water, eta_air, D_vap
+from simulation.constants import Q_, eta_air, D_vap
 from planets.earth import earth
 
 import pint

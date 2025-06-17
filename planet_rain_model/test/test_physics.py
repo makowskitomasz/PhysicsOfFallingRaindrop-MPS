@@ -3,7 +3,7 @@ import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from simulation.physics import *
+from simulation.physics import saturation_vapor_pressure, terminal_velocity, pressure_profile
 from simulation.constants import Q_
 
 def test_saturation_pressure_reasonable():

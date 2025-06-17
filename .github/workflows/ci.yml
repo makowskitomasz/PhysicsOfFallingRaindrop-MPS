@@ -29,9 +29,11 @@ jobs:
         run: |
           ruff check . --output-format=full --fix
 
-      - name: Execute all notebooks
+      - name: Execute main notebook
         run: |
+          mkdir -p executed_notebooks
           for nb in $(find planet_rain_model terminal_velocity -name "*.ipynb"); do
             echo "Running notebook: $nb"
-            jupyter nbconvert --to notebook --execute "$nb" --output /dev/null || echo "❌ Failed: $nb"
+            jupyter nbconvert --to notebook --execute "$nb" --output-dir executed_notebooks || echo "❌ Failed: $nb"
           done
+

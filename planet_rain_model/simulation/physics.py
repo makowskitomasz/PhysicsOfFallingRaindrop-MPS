@@ -41,7 +41,7 @@ def calculate_fSA(shape_ratio):
     Computes surface area correction factor fSA based on shape ratio.
     """
     epsilon = np.sqrt(1 - shape_ratio**2)
-    if shape_ratio < 1:
+    if shape_ratio < 1 and shape_ratio > 0:
         return 0.5 * (shape_ratio ** (-2/3)) + shape_ratio ** (4/3) * \
             np.log((1 + epsilon) / (1 - epsilon)) / (4 * epsilon)
     elif shape_ratio == 1:

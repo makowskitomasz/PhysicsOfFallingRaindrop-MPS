@@ -27,6 +27,8 @@ def plot_radius_vs_altitude(radii0, z0, planet, model_fn, figsize=(5, 5)):
     plt.style.use("dark_background")
     plt.figure(figsize=figsize)
 
+    radii0 = sorted(radii0, key=lambda r: r.magnitude)
+
     for r0 in radii0:
         traj = model_fn(r0, z0, planet)
         traj = np.array(traj)

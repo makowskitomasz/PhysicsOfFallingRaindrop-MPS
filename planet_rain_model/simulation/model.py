@@ -29,7 +29,7 @@ def simulate_raindrop_descent(r0, z0, planet, dz=Q_(0.1, "m")):
         p = pressure_profile(z, planet["p0"], planet["T0"], planet["g"])
         v = terminal_velocity(r)
 
-        momentum_flux = (planet["rho_air"] * v * 2 * r)
+        momentum_flux = planet["rho_air"] * v * 2 * r
         Re = np.divide(momentum_flux, eta_air, out=np.zeros_like(momentum_flux), where=eta_air!=0)
         Sc = eta_air / (planet["rho_air"] * D_vap)
         f_V = ventilation_factor(Re.magnitude, Sc.magnitude)

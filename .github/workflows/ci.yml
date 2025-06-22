@@ -1,0 +1,39 @@
+name: Full CI Workflow
+
+on: [push, pull_request]
+
+jobs:
+  test-lint-notebooks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest ruff nbconvert ipykernel nbqa
+
+      - name: Run tests
+        run: |
+          pytest planet_rain_model/test/ --maxfail=1 --disable-warnings -q
+
+      - name: Run linter (ruff)
+        run: |
+          ruff check . --output-format=full --fix
+
+      - name: Execute main notebook
+        run: |
+          mkdir -p executed_notebooks
+          for nb in $(find planet_rain_model terminal_velocity -name "*.ipynb"); do
+            echo "Running notebook: $nb"
+            jupyter nbconvert --to notebook --execute "$nb" --output-dir executed_notebooks || echo "❌ Failed: $nb"
+          done
+
